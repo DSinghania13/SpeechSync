@@ -63,7 +63,7 @@ SpeechSync/
 ### 📦 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/speechsync.git
+git clone https://github.com/DSinghania13/speechsync.git
 cd speechsync
 ```
 
