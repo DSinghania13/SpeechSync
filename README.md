@@ -51,6 +51,7 @@ SpeechSync/
 ├── assets/                   # Icons, spinner, audio, etc.
 │   ├── microphone.png
 │   ├── pause.png
+│   ├── play.png
 │   ├── stop.png
 │   ├── spinner.gif
 └── uploads/                  # Runtime audio storage (ignored in Git)
