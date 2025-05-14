@@ -2,8 +2,6 @@
 
 **SpeechSync** is a real-time multilingual speech-to-speech translation system that bridges communication gaps across languages. Built using a modular pipeline of ASR (Automatic Speech Recognition), NMT (Neural Machine Translation), and TTS (Text-to-Speech), SpeechSync delivers low-latency, high-accuracy translations that are both context-aware and user-friendly.
 
-Developed as part of a final year B.Tech project by Group-75 at **VIT Bhopal University**, the system is built with performance, scalability, and user experience in mind.
-
 ---
 
 ## 🚀 Features
@@ -120,11 +118,10 @@ http://localhost:3000
 
 ## 👨‍💻 Contributors
 
-Developed by Group-75, B.Tech CSE (AI/ML), VIT Bhopal:
-- Vipransh Ojha (23BAI10264)
-- Divit Singhania (23BAI10721)
-- Gaurav Lodhi (23BAI11272)
-- Abhijeet Dubey (23BAI11308)
+- Vipransh Ojha
+- Divit Singhania
+- Gaurav Lodhi
+- Abhijeet Dubey
 
 > _“Speak with ease, translate in a breeze” – because the world should never be lost in translation._
 
