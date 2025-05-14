@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+
+# Audio uploads (generated at runtime)
+uploads/
+output/
+
+# OS / editor files
+.DS_Store
+.env
+*.log
