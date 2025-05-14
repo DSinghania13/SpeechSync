@@ -119,10 +119,10 @@ http://localhost:3000
 
 ## 👨‍💻 Contributors
 
-- Vipransh Ojha
-- Divit Singhania
+- [Vipransh Ojha](https://www.linkedin.com/in/vipransh-ojha/)
+- [Divit Singhania](https://www.linkedin.com/in/divit-singhania-13401628a/)
 - Gaurav Lodhi
-- Abhijeet Dubey
+- [Abhijeet Dubey](https://www.linkedin.com/in/aiabhijeet/)
 
 > _“Speak with ease, translate in a breeze” – because the world should never be lost in translation._
 
