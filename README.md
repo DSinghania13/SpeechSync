@@ -4,6 +4,14 @@
 
 ---
 
+### 🖼️ User Interface Preview
+
+Below is a preview of the web-based interface designed for seamless interaction. Users can input borrower details and receive real-time credit risk predictions with an intuitive and responsive layout.
+
+![image](https://github.com/user-attachments/assets/6fde6ed0-4377-421a-bebc-31d43fb53745)
+
+---
+
 ## 🚀 Features
 
 - 🎤 Real-time speech recognition with pause/resume control  
