@@ -96,11 +96,15 @@ node server.js
 http://localhost:3000
 ```
 
+---
+
 ## 🧪 Model Architecture
 
 1.	**ASR** → Transcribes speech into text
 2.	**NMT (MarianMT)** → Translates text into target language
 3.	**TTS** → Converts translated text into speech
+
+---
 
 ## 🎯 Use Cases
 
@@ -110,12 +114,16 @@ http://localhost:3000
 - **Tourism**: Voice translator for travel
 - **Emergency**: Humanitarian aid communication
 
+---
+
 ## 📊 Performance
 
 - **⏱️ Latency**: Under 5 seconds
 - **✅ Accuracy**: 90%+ for common languages
 - 🌍 Supports Hindi, Spanish, French, Bengali
 - 🔁 Scalable with modular backend
+
+---
 
 ## 👨‍💻 Contributors
 
