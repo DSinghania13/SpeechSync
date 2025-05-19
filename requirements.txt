@@ -8,5 +8,5 @@ pydub
 flask
 requests
 fairseq
-faster-whisper
+faster-whisper 
 gtts
