@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SpeechSync</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -143,6 +144,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <h1>🎙️ SpeechSync</h1>
@@ -182,157 +184,167 @@
     <audio id="output-audio" controls></audio>
   </div>
 
-    <script>
-        const startButton = document.getElementById('start');
-        const stopButton = document.getElementById('stop');
-        const pauseButton = document.getElementById('pause');
-        const playback = document.getElementById('playback');
-        const outputAudio = document.getElementById('output-audio');
-        const visualization = document.getElementById('visualization');
-        const processingIndicator = document.getElementById('processing-indicator');
-        const outputSection = document.getElementById('output-section');
-        const languageSelect = document.getElementById('language');
+  <script>
+    const startButton = document.getElementById('start');
+    const stopButton = document.getElementById('stop');
+    const pauseButton = document.getElementById('pause');
+    const playback = document.getElementById('playback');
+    const outputAudio = document.getElementById('output-audio');
+    const visualization = document.getElementById('visualization');
+    const processingIndicator = document.getElementById('processing-indicator');
+    const outputSection = document.getElementById('output-section');
+    const languageSelect = document.getElementById('language');
 
-        let mediaRecorder;
-        let audioChunks = [];
-        let isRecording = false;
-        let isPaused = false;
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+    let isPaused = false;
+    let source;
 
-        // Setup Web Audio API
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256;
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
+    // Setup Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 256;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
 
-        const canvasContext = visualization.getContext('2d');
+    const canvasContext = visualization.getContext('2d');
 
-        // Create gradient for waveform color
-        const gradient = canvasContext.createLinearGradient(0, 0, 0, 100);
-        gradient.addColorStop(0, 'red');   // Red for low values
-        gradient.addColorStop(0.5, 'orange'); // Orange for mid values
-        gradient.addColorStop(1, 'green')
+    // Create gradient for waveform color
+    const gradient = canvasContext.createLinearGradient(0, 0, 0, 100);
+    gradient.addColorStop(0, 'red');   // Red for low values
+    gradient.addColorStop(0.5, 'orange'); // Orange for mid values
+    gradient.addColorStop(1, 'green')
 
-        // WebSocket setup
-        const ws = new WebSocket('ws://localhost:8080');
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            processingIndicator.innerHTML = `<p>${data.stage}</p>`;
-            processingIndicator.style.display = 'block';
+    processingIndicator.style.display = 'none';
 
-            if (data.stage === 'Processing complete.') {
-                processingIndicator.style.display = 'none';
-                outputSection.style.display = 'block'; // Display output section after processing is complete
-            }
+    // WebSocket setup
+    const ws = new WebSocket('ws://localhost:8080');
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      processingIndicator.innerHTML = `<p>${data.stage}</p>`;
+      processingIndicator.style.display = 'block';
+
+      if (data.stage === 'Processing complete.') {
+        processingIndicator.style.display = 'none';
+        outputSection.style.display = 'block'; // Display output section after processing is complete
+      }
+    };
+
+    // Start Recording
+    startButton.addEventListener('click', async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+        isRecording = true;
+
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        pauseButton.disabled = false;
+
+        audioChunks = [];
+        mediaRecorder.ondataavailable = (event) => {
+          audioChunks.push(event.data);
         };
 
-        // Start Recording
-        startButton.addEventListener('click', async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.start();
-                isRecording = true;
+        source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+        drawVisualizer();
+      } catch (error) {
+        alert("Microphone access denied or unavailable!");
+        console.error("Error accessing microphone:", error);
+      }
+    });
 
-                startButton.disabled = true;
-                stopButton.disabled = false;
-                pauseButton.disabled = false;
+    // Stop Recording and Auto Download
+    stopButton.addEventListener('click', () => {
+      if (isRecording) {
+        mediaRecorder.stop();
+        isRecording = false;
 
-                audioChunks = [];
-                mediaRecorder.ondataavailable = (event) => {
-                    audioChunks.push(event.data);
-                };
-
-                const source = audioContext.createMediaStreamSource(stream);
-                source.connect(analyser);
-                drawVisualizer();
-            } catch (error) {
-                alert("Microphone access denied or unavailable!");
-                console.error("Error accessing microphone:", error);
-            }
-        });
-
-        // Stop Recording and Auto Download
-        stopButton.addEventListener('click', () => {
-            if (isRecording) {
-                mediaRecorder.stop();
-                isRecording = false;
-
-                outputAudio.src = '';
-                outputAudio.style.display = 'none';
-                outputSection.style.display = 'none';
-
-                mediaRecorder.onstop = async () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    const audioURL = URL.createObjectURL(audioBlob);
-                    playback.src = audioURL;
-
-                    processingIndicator.style.display = 'block';
-
-                    const selectedLanguage = languageSelect.value;
-
-                    const formData = new FormData();
-                    formData.append('audio', audioBlob, 'recording.wav');
-                    formData.append('language', selectedLanguage);
-
-                    try {
-                        const response = await fetch('/upload', {
-                            method: 'POST',
-                            body: formData,
-                        });
-                        const data = await response.json();
-
-                        processingIndicator.style.display = 'none';
-
-                        const translatedAudioUrl = data.translatedAudioUrl;
-                        outputAudio.src = translatedAudioUrl;
-                        outputAudio.style.display = 'block';
-
-                        outputSection.style.display = 'block';
-                    } catch (error) {
-                        console.error('Error uploading file:', error);
-                        alert('There was an error processing your audio. Please try again.');
-
-                        processingIndicator.style.display = 'none';
-                    }
-                };
-
-                stopButton.disabled = true;
-                startButton.disabled = false;
-            }
-        });
-
-        // Pause and Resume Recording
-        pauseButton.addEventListener('click', () => {
-            if (isPaused) {
-                mediaRecorder.resume();
-                pauseButton.innerHTML = '<img src="assets/pause.png" class="icon" alt=""> Pause Recording';
-            } else {
-                mediaRecorder.pause();
-                pauseButton.innerHTML = '<img src="assets/play.png" class="icon" alt=""> Resume Recording';
-            }
-            isPaused = !isPaused;
-        });
-
-        // Draw the audio waveform with gradient color
-        function drawVisualizer() {
-            requestAnimationFrame(drawVisualizer);
-
-            analyser.getByteFrequencyData(dataArray);
-
-            canvasContext.clearRect(0, 0, visualization.width, visualization.height);
-            const barWidth = (visualization.width / bufferLength) * 2.5;
-            let barHeight;
-            let x = 0;
-
-            for (let i = 0; i < bufferLength; i++) {
-                barHeight = dataArray[i];
-                canvasContext.fillStyle = gradient; // Apply gradient
-                canvasContext.fillRect(x, visualization.height - barHeight, barWidth, barHeight);
-                x += barWidth + 1;
-            }
+        if (source) {
+          source.disconnect();
         }
-    </script>
+
+        outputAudio.src = '';
+        outputAudio.style.display = 'none';
+        outputSection.style.display = 'none';
+
+        mediaRecorder.onstop = async () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+          const audioURL = URL.createObjectURL(audioBlob);
+          playback.src = audioURL;
+
+          processingIndicator.style.display = 'block';
+
+          const selectedLanguage = languageSelect.value;
+
+          const formData = new FormData();
+          formData.append('audio', audioBlob, 'recording.wav');
+          formData.append('language', selectedLanguage);
+
+          try {
+            const response = await fetch('/upload', {
+              method: 'POST',
+              body: formData,
+            });
+            const data = await response.json();
+
+            processingIndicator.style.display = 'none';
+
+            const translatedAudioUrl = data.translatedAudioUrl;
+            outputAudio.src = translatedAudioUrl;
+            outputAudio.style.display = 'block';
+
+            outputSection.style.display = 'block';
+          } catch (error) {
+            console.error('Error uploading file:', error);
+            alert('There was an error processing your audio. Please try again.');
+
+            processingIndicator.style.display = 'none';
+          }
+        };
+
+        stopButton.disabled = true;
+        startButton.disabled = false;
+      }
+    });
+
+    // Pause and Resume Recording
+    pauseButton.addEventListener('click', () => {
+      if (isPaused) {
+        mediaRecorder.resume();
+        pauseButton.innerHTML = '<img src="assets/pause.png" class="icon" alt=""> Pause Recording';
+        source.connect(analyser);
+        drawVisualizer();
+      } else {
+        mediaRecorder.pause();
+        pauseButton.innerHTML = '<img src="assets/play.png" class="icon" alt=""> Resume Recording';
+        source.disconnect();
+      }
+      isPaused = !isPaused;
+    });
+
+    // Draw the audio waveform with gradient color
+    function drawVisualizer() {
+      requestAnimationFrame(drawVisualizer);
+
+      analyser.getByteFrequencyData(dataArray);
+
+      canvasContext.clearRect(0, 0, visualization.width, visualization.height);
+      const barWidth = (visualization.width / bufferLength) * 2.5;
+      let barHeight;
+      let x = 0;
+
+      for (let i = 0; i < bufferLength; i++) {
+        barHeight = dataArray[i];
+        canvasContext.fillStyle = gradient; // Apply gradient
+        canvasContext.fillRect(x, visualization.height - barHeight, barWidth, barHeight);
+        x += barWidth + 1;
+      }
+    }
+  </script>
 
 </body>
 
