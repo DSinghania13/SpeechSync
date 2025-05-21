@@ -5,8 +5,6 @@ soundfile
 numpy
 scipy
 pydub
-flask
 requests
-fairseq
-faster-whisper 
 gtts
+openai-whisper
