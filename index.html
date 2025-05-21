@@ -151,9 +151,9 @@
   <div class="section">
     <h2>Input Audio</h2>
     <div class="control-buttons">
-      <button id="start"><img src="assets/microphone-8-512.png" class="icon"> Start Recording</button>
-      <button id="stop" disabled><img src="assets/square-rounded-512.png" class="icon"> Stop Recording</button>
-      <button id="pause" disabled><img src="assets/pause-512.png" class="icon"> Pause Recording</button>
+      <button id="start"><img src="assets/microphone.png" class="icon"> Start Recording</button>
+      <button id="stop" disabled><img src="assets/stop.png" class="icon"> Stop Recording</button>
+      <button id="pause" disabled><img src="assets/pause.png" class="icon"> Pause Recording</button>
     </div>
 
     <div style="margin-top: 20px;">
@@ -306,10 +306,10 @@
         pauseButton.addEventListener('click', () => {
             if (isPaused) {
                 mediaRecorder.resume();
-                pauseButton.innerHTML = '<img src="assets/pause-512.png" class="icon" alt=""> Pause Recording';
+                pauseButton.innerHTML = '<img src="assets/pause.png" class="icon" alt=""> Pause Recording';
             } else {
                 mediaRecorder.pause();
-                pauseButton.innerHTML = '<img src="assets/play-512.png" class="icon" alt=""> Resume Recording';
+                pauseButton.innerHTML = '<img src="assets/play.png" class="icon" alt=""> Resume Recording';
             }
             isPaused = !isPaused;
         });
