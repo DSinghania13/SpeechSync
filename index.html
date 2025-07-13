@@ -1,351 +1,582 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SpeechSync</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f4f6f8;
-      color: #333;
-      padding: 40px 20px;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      color: #222;
-      margin-bottom: 30px;
-    }
-
-    .section {
-      background: white;
-      padding: 25px 30px;
-      margin-bottom: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-      color: #444;
-    }
-
-    .control-buttons {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 10px;
-    }
-
-    .control-buttons button {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .control-buttons button:hover:not(:disabled) {
-      background-color: #1d4ed8;
-    }
-
-    .control-buttons button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-
-    #stop {
-      background-color: #ef4444;
-    }
-
-    #stop:hover:not(:disabled) {
-      background-color: #dc2626;
-    }
-
-    #pause {
-      background-color: #facc15;
-      color: #333;
-    }
-
-    #pause:hover:not(:disabled) {
-      background-color: #eab308;
-    }
-
-    .icon {
-      width: 20px;
-      height: 20px;
-    }
-
-    label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    select {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      width: 100%;
-    }
-
-    audio {
-      width: 100%;
-      margin-top: 15px;
-    }
-
-    #visualization {
-      width: 100%;
-      height: 120px;
-      background-color: #111827;
-      border-radius: 10px;
-      margin-top: 15px;
-    }
-
-    #processing-indicator {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    #processing-indicator p {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    #processing-indicator img {
-      width: 40px;
-      height: 40px;
-    }
-
-    #output-section {
-      display: none;
-    }
-
-    @media (max-width: 600px) {
-      .control-buttons {
-        flex-direction: column;
-        align-items: stretch;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeechSync - Speech Translator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --success: #4ade80;
+            --warning: #facc15;
+            --error: #f87171;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f0f2f5, #e6e9ff);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .main-content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        @media (min-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .panel {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        .panel-title i {
+            font-size: 24px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        select, .language-display {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .language-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        .btn {
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--secondary); }
+        .btn-secondary { background: white; color: var(--primary); border: 2px solid var(--primary); }
+        .btn-secondary:hover { background: #f0f7ff; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-record { grid-column: span 2; padding: 16px; font-size: 18px; }
+        .recording { animation: pulse 1.5s infinite; }
+        #visualization { width: 100%; height: 120px; background-color: #111827; border-radius: 10px; margin-top: 15px; }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(67, 97, 238, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+        }
+        .result-box audio { margin-bottom: 10px; display: block; width: 100%; }
+        .result-box {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+            max-height: 300px;
+        }
+        .result-placeholder {
+            color: #94a3b8;
+            font-style: italic;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .transcription-text, .translation-text {
+            line-height: 1.6;
+            font-size: 17px;
+        }
+        .status {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+        .status-listening { background: rgba(76, 201, 240, 0.2); color: var(--primary); }
+        .status-processing { background: rgba(250, 204, 21, 0.2); color: #ca8a04; }
+        .status-success { background: rgba(74, 222, 128, 0.2); color: #15803d; }
+        .status-error { background: rgba(248, 113, 113, 0.2); color: #b91c1c; }
+        .language-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .lang-btn {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 500;
+        }
+        .lang-btn:hover, .lang-btn.active {
+            border-color: var(--primary);
+            background: #f0f7ff;
+            color: var(--primary);
+        }
+        .lang-flag {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-language"></i>
+                <h1>SpeechSync</h1>
+            </div>
+            <p class="tagline">Speak with ease, translate in a breeze</p>
+        </header>
 
-  <h1>🎙️ SpeechSync</h1>
+        <div class="main-content">
+            <div class="panel">
+                <div class="panel-title">
+                    <i class="fas fa-microphone"></i>
+                    <h2>Input Audio</h2>
+                </div>
 
-  <!-- Input Section -->
-  <div class="section">
-    <h2>Input Audio</h2>
-    <div class="control-buttons">
-      <button id="start"><img src="assets/microphone.png" class="icon" alt=""> Start Recording</button>
-      <button id="stop" disabled><img src="assets/stop.png" class="icon" alt=""> Stop Recording</button>
-      <button id="pause" disabled><img src="assets/pause.png" class="icon" alt=""> Pause Recording</button>
+                <div class="input-group">
+                    <label>Translation Language</label>
+                    <div class="language-display">
+                        <span>English</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Translation Language</label>
+                    <div class="language-display">
+                        <span id="targetLanguageDisplay">Hindi</span>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-primary btn-record" id="recordBtn">
+                        <i class="fas fa-microphone"></i> Start Recording
+                    </button>
+                    <button class="btn btn-primary" id="startBtn">
+                        <i class="fas fa-pause"></i>Pause
+                    </button>
+                    <button class="btn btn-secondary" id="stopBtn" disabled>
+                        <i class="fas fa-stop"></i> Stop
+                    </button>
+                </div>
+                <div class="status" id="status">
+                    Ready to translate
+                </div>
+                <canvas id="visualization"></canvas>
+                <br><br>
+
+                <div class="panel-title">
+                  <i class="fas fa-comment-dots"></i>
+                  <h2>Transcription</h2>
+                </div>
+                <audio id="inputPlayer" controls style="width: 100%; display: none;"></audio>
+                <div class="result-box" id="transcription">
+                  <div class="result-placeholder">
+                      <i class="fas fa-headphones"></i> Your speech will appear here...
+                  </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">
+                    <i class="fas fa-globe-asia"></i>
+                    <h2>Select Translation Language:</h2>
+                </div>
+
+                <div class="language-options">
+                    <div class="lang-btn active" data-lang="hi-IN">
+                        <div class="lang-flag">🇮🇳</div>
+                        <div>Hindi</div>
+                    </div>
+                    <div class="lang-btn" data-lang="bn-IN">
+                        <div class="lang-flag">🇮🇳</div>
+                        <div>Bengali</div>
+                    </div>
+                    <div class="lang-btn" data-lang="es-SP">
+                        <div class="lang-flag">🇪🇸</div>
+                        <div>Spain</div>
+                    </div>
+                    <div class="lang-btn" data-lang="fr-FR">
+                        <div class="lang-flag">🇫🇷</div>
+                        <div>French</div>
+                    </div>
+                </div>
+
+                <div class="panel-title" style="margin-top: 30px;">
+                    <i class="fas fa-lightbulb"></i>
+                    <h2>How to Use</h2>
+                </div>
+                <ol style="padding-left: 20px; line-height: 1.8;">
+                    <li>Record your voice in English (maximum 50 seconds)</li>
+                    <li>Choose target translation language</li>
+                    <li>Click "Start Recording" and speak clearly</li>
+                    <li>View transcription and translation in real-time</li>
+                    <li>Use the Translate button for manual translation</li>
+                </ol>
+                <br>
+                <div class="panel-title">
+                  <i class="fas fa-exchange-alt"></i>
+                  <h2>Translation</h2>
+                </div>
+                <audio id="outputPlayer" controls style="width: 100%; display: none;"></audio>
+                <div class="result-box" id="translation">
+                  <div class="result-placeholder">
+                      <i class="fas fa-language"></i> Translation will appear here...
+                  </div>
+                </div>
+
+                <button class="btn btn-primary" id="translateBtn" style="width: 100%; margin-top: 20px;">
+                    <i class="fas fa-sync-alt"></i> Translate Now
+                </button>
+
+            </div>
+        </div>
+
+        <footer>
+            <p>SpeechSync 2025 | Real-time Speech Translation System</p>
+        </footer>
     </div>
 
-    <div style="margin-top: 20px;">
-      <label for="language">Select Translation Language:</label>
-      <select id="language">
-        <option value="hi">Hindi</option>
-        <option value="es">Spanish</option>
-        <option value="fr">French</option>
-        <option value="bn">Bengali</option>
-      </select>
-    </div>
-
-    <audio id="playback" controls></audio>
-    <canvas id="visualization"></canvas>
-  </div>
-
-  <!-- Processing Indicator -->
-  <div id="processing-indicator">
-    <p>Processing your audio...</p>
-    <img src="assets/spinner.gif" alt="Processing...">
-  </div>
-
-  <!-- Output Section -->
-  <div class="section" id="output-section">
-    <h2>Translated Audio</h2>
-    <audio id="output-audio" controls></audio>
-  </div>
-
-  <script>
-    const startButton = document.getElementById('start');
-    const stopButton = document.getElementById('stop');
-    const pauseButton = document.getElementById('pause');
-    const playback = document.getElementById('playback');
-    const outputAudio = document.getElementById('output-audio');
+<script>
+    // Grab key DOM elements
+    const recordBtn = document.getElementById('recordBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const startBtn = document.getElementById('startBtn');
+    const translateBtn = document.getElementById('translateBtn');
+    const statusBox = document.getElementById('status');
     const visualization = document.getElementById('visualization');
-    const processingIndicator = document.getElementById('processing-indicator');
-    const outputSection = document.getElementById('output-section');
-    const languageSelect = document.getElementById('language');
+    const transcriptionBox = document.getElementById('transcription');
+    const translationBox = document.getElementById('translation');
+    const languageButtons = document.querySelectorAll('.lang-btn');
+    const targetLanguageDisplay = document.getElementById('targetLanguageDisplay');
 
+    // Base URL for backend API
+    const baseUrl = 'http://localhost:5050';
+
+    // State variables for recording and media
     let mediaRecorder;
     let audioChunks = [];
     let isRecording = false;
     let isPaused = false;
-    let source;
+    let selectedLanguage = 'hi-IN';
+    let maxDurationTimeout = null;
+    let stream;
 
-    // Setup Web Audio API
+    // Audio context and visualizer setup
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const analyser = audioContext.createAnalyser();
     analyser.fftSize = 256;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
-
     const canvasContext = visualization.getContext('2d');
 
-    // Create gradient for waveform color
+    // Set gradient colors for waveform bars
     const gradient = canvasContext.createLinearGradient(0, 0, 0, 100);
-    gradient.addColorStop(0, 'red');   // Red for low values
-    gradient.addColorStop(0.5, 'orange'); // Orange for mid values
-    gradient.addColorStop(1, 'green')
+    gradient.addColorStop(0, 'red');
+    gradient.addColorStop(0.5, 'orange');
+    gradient.addColorStop(1, 'green');
 
-    processingIndicator.style.display = 'none';
+    // Handle language button selection
+    languageButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            languageButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            selectedLanguage = button.dataset.lang;
 
-    // WebSocket setup
-    const ws = new WebSocket('ws://localhost:8080');
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      processingIndicator.innerHTML = `<p>${data.stage}</p>`;
-      processingIndicator.style.display = 'block';
-
-      if (data.stage === 'Processing complete.') {
-        processingIndicator.style.display = 'none';
-        outputSection.style.display = 'block'; // Display output section after processing is complete
-      }
-    };
-
-    // Start Recording
-    startButton.addEventListener('click', async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.start();
-        isRecording = true;
-
-        startButton.disabled = true;
-        stopButton.disabled = false;
-        pauseButton.disabled = false;
-
-        audioChunks = [];
-        mediaRecorder.ondataavailable = (event) => {
-          audioChunks.push(event.data);
-        };
-
-        source = audioContext.createMediaStreamSource(stream);
-        source.connect(analyser);
-        drawVisualizer();
-      } catch (error) {
-        alert("Microphone access denied or unavailable!");
-        console.error("Error accessing microphone:", error);
-      }
+            // Update displayed language name
+            const nameDivs = button.querySelectorAll('div');
+            targetLanguageDisplay.innerText = nameDivs[nameDivs.length - 1].textContent.trim();
+        });
     });
 
-    // Stop Recording and Auto Download
-    stopButton.addEventListener('click', () => {
-      if (isRecording) {
-        mediaRecorder.stop();
-        isRecording = false;
+    // Start recording handler
+    recordBtn.addEventListener('click', async () => {
+        // Reset UI placeholders
+        transcriptionBox.innerHTML = `<p class="transcription-text">(Transcription will appear after translation)</p>`;
+        translationBox.innerHTML = `<p class="translation-text">Click 'Translate Now' to begin translation...</p>`;
+        document.getElementById('inputPlayer')?.remove();
+        document.getElementById('outputPlayer')?.remove();
 
-        if (source) {
-          source.disconnect();
+        try {
+            await audioContext.resume();  // Ensure audio context is running (needed on some browsers)
+
+            // Start recording
+            stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+            isRecording = true;
+            audioChunks = [];
+
+            // Connect visualizer
+            const source = audioContext.createMediaStreamSource(stream);
+            source.connect(analyser);
+            drawVisualizer();
+
+            // Set max duration to 50 seconds
+            maxDurationTimeout = setTimeout(() => {
+                if (mediaRecorder && isRecording) {
+                    mediaRecorder.stop();
+                    statusBox.textContent = "Stopped automatically after 50 seconds.";
+                }
+            }, 50000);
+
+            // Collect audio data
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+
+            // Update UI state
+            statusBox.textContent = "Listening...";
+            statusBox.className = "status status-listening";
+
+            // When recording stops, send audio to backend for transcription
+            mediaRecorder.onstop = async () => {
+                clearTimeout(maxDurationTimeout);
+                statusBox.textContent = "Transcribing...";
+                statusBox.className = "status status-processing";
+
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'recording.wav');
+                formData.append('language', selectedLanguage);
+
+                // Stop mic stream
+                stream.getTracks().forEach(track => track.stop());
+
+                // Update UI button states
+                stopBtn.disabled = true;
+                startBtn.disabled = true;
+                recordBtn.disabled = false;
+
+                // Save form data globally for reuse
+                window.lastFormData = formData;
+
+                // Send audio to backend and update UI with result
+                try {
+                    const response = await fetch(`${baseUrl}/upload?stage=transcribe`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    // Create and append input audio player
+                    const inputPlayer = document.createElement('audio');
+                    inputPlayer.id = 'inputPlayer';
+                    inputPlayer.controls = true;
+                    inputPlayer.autoplay = false;
+                    inputPlayer.playsInline = true;
+                    inputPlayer.style.width = '100%';
+                    inputPlayer.src = `${baseUrl}${result.inputAudioUrl || '/uploads/recording.wav'}`;
+                    transcriptionBox.parentNode.insertBefore(inputPlayer, transcriptionBox);
+
+                    // Display transcription text
+                    transcriptionBox.innerHTML = `<p class="transcription-text">${result.transcription}</p>`;
+                    statusBox.textContent = "Ready for manual translation.";
+                    statusBox.className = "status status-success";
+                } catch (err) {
+                    console.error("Transcription failed", err);
+                    statusBox.textContent = "Transcription failed.";
+                    statusBox.className = "status status-error";
+                }
+            };
+
+            // Enable stop/pause buttons
+            stopBtn.disabled = false;
+            startBtn.disabled = false;
+            recordBtn.disabled = true;
+        } catch (err) {
+            alert("Microphone access denied.");
+            console.error(err);
+        }
+    });
+
+    // Toggle pause/resume recording
+    startBtn.addEventListener('click', () => {
+        if (!mediaRecorder) return;
+        if (isPaused) {
+            mediaRecorder.resume();
+            startBtn.innerHTML = `<i class="fas fa-pause"></i> Pause`;
+            statusBox.textContent = "Resumed.";
+        } else {
+            mediaRecorder.pause();
+            startBtn.innerHTML = `<i class="fas fa-play"></i> Resume`;
+            statusBox.textContent = "Paused.";
+        }
+        isPaused = !isPaused;
+    });
+
+    // Manually stop recording
+    stopBtn.addEventListener('click', () => {
+        if (mediaRecorder && isRecording) {
+            clearTimeout(maxDurationTimeout);
+            mediaRecorder.stop();
+            isRecording = false;
+
+            stopBtn.disabled = true;
+            startBtn.disabled = true;
+            recordBtn.disabled = false;
+        }
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+    // Handle "Translate Now" button
+    translateBtn.addEventListener('click', async () => {
+        if (!window.lastFormData) {
+            return alert('No recorded input to translate.');
         }
 
-        outputAudio.src = '';
-        outputAudio.style.display = 'none';
-        outputSection.style.display = 'none';
+        // Update language in form
+        window.lastFormData.set('language', selectedLanguage);
 
-        mediaRecorder.onstop = async () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-          const audioURL = URL.createObjectURL(audioBlob);
-          playback.src = audioURL;
+        statusBox.textContent = "Processing translation...";
+        statusBox.className = "status status-processing";
 
-          processingIndicator.style.display = 'block';
-
-          const selectedLanguage = languageSelect.value;
-
-          const formData = new FormData();
-          formData.append('audio', audioBlob, 'recording.wav');
-          formData.append('language', selectedLanguage);
-
-          try {
-            const response = await fetch('/upload', {
-              method: 'POST',
-              body: formData,
+        try {
+            const response = await fetch(`${baseUrl}/upload?stage=translate`, {
+                method: 'POST',
+                body: window.lastFormData
             });
-            const data = await response.json();
 
-            processingIndicator.style.display = 'none';
+            const result = await response.json();
+            console.log("Parsed Translation Result:", result);
 
-            const translatedAudioUrl = data.translatedAudioUrl;
-            outputAudio.src = translatedAudioUrl;
-            outputAudio.style.display = 'block';
+            document.getElementById('outputPlayer')?.remove();
 
-            outputSection.style.display = 'block';
-          } catch (error) {
-            console.error('Error uploading file:', error);
-            alert('There was an error processing your audio. Please try again.');
+            // Create and append output audio player
+            const outputPlayer = document.createElement('audio');
+            outputPlayer.id = 'outputPlayer';
+            outputPlayer.controls = true;
+            outputPlayer.autoplay = false;
+            outputPlayer.playsInline = true;
+            outputPlayer.style.width = '100%';
+            outputPlayer.src = `${baseUrl}${result.outputAudioUrl}`;
+            translationBox.parentNode.insertBefore(outputPlayer, translationBox);
 
-            processingIndicator.style.display = 'none';
-          }
-        };
+            // Display translation text
+            if (result.translation && result.translation.trim()) {
+                translationBox.innerHTML = `<p class="translation-text">${result.translation}</p>`;
+            } else {
+                translationBox.innerHTML = `<p class="translation-text error">No translation found</p>`;
+            }
 
-        stopButton.disabled = true;
-        startButton.disabled = false;
-      }
+            statusBox.textContent = "Translation complete.";
+            statusBox.className = "status status-success";
+        } catch (err) {
+            console.error("Translation failed:", err);
+            statusBox.textContent = "Translation failed.";
+            statusBox.className = "status status-error";
+            translationBox.innerHTML = `<p class="translation-text error">Server error during translation</p>`;
+        }
     });
 
-    // Pause and Resume Recording
-    pauseButton.addEventListener('click', () => {
-      if (isPaused) {
-        mediaRecorder.resume();
-        pauseButton.innerHTML = '<img src="assets/pause.png" class="icon" alt=""> Pause Recording';
-        source.connect(analyser);
-        drawVisualizer();
-      } else {
-        mediaRecorder.pause();
-        pauseButton.innerHTML = '<img src="assets/play.png" class="icon" alt=""> Resume Recording';
-        source.disconnect();
-      }
-      isPaused = !isPaused;
-    });
-
-    // Draw the audio waveform with gradient color
+    // Draw waveform animation
     function drawVisualizer() {
-      requestAnimationFrame(drawVisualizer);
+        requestAnimationFrame(drawVisualizer);
+        analyser.getByteFrequencyData(dataArray);
+        canvasContext.clearRect(0, 0, visualization.width, visualization.height);
+        const barWidth = (visualization.width / bufferLength) * 2.5;
+        let x = 0;
 
-      analyser.getByteFrequencyData(dataArray);
-
-      canvasContext.clearRect(0, 0, visualization.width, visualization.height);
-      const barWidth = (visualization.width / bufferLength) * 2.5;
-      let barHeight;
-      let x = 0;
-
-      for (let i = 0; i < bufferLength; i++) {
-        barHeight = dataArray[i];
-        canvasContext.fillStyle = gradient; // Apply gradient
-        canvasContext.fillRect(x, visualization.height - barHeight, barWidth, barHeight);
-        x += barWidth + 1;
-      }
+        for (let i = 0; i < bufferLength; i++) {
+            const barHeight = dataArray[i];
+            canvasContext.fillStyle = gradient;
+            canvasContext.fillRect(x, visualization.height - barHeight, barWidth, barHeight);
+            x += barWidth + 1;
+        }
     }
-  </script>
-
+</script>
 </body>
-
 </html>

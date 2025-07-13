@@ -2,11 +2,14 @@
 
 **SpeechSync** is a real-time multilingual speech-to-speech translation system that bridges communication gaps across languages. Built using a modular pipeline of ASR (Automatic Speech Recognition), NMT (Neural Machine Translation), and TTS (Text-to-Speech), SpeechSync delivers low-latency, high-accuracy translations that are both context-aware and user-friendly.
 
+
+> ⚠️ **For the best experience, open this app in Google Chrome. Safari may have limited audio playback support.**
+
 ---
 
 ### 🖼️ User Interface Preview
 
-Below is a preview of the web-based interface designed for seamless interaction. Users can input borrower details and receive real-time credit risk predictions with an intuitive and responsive layout.
+Below is a preview of the web-based interface designed for seamless interaction. Users can speak live and receive real-time translations in an intuitive, responsive interface.
 
 ![image](https://github.com/user-attachments/assets/6fde6ed0-4377-421a-bebc-31d43fb53745)
 
@@ -16,101 +19,118 @@ Below is a preview of the web-based interface designed for seamless interaction.
 
 - 🎤 Real-time speech recognition with pause/resume control  
 - 🌐 Multilingual translation using MarianMT  
-- 🗣️ Natural-sounding speech synthesis via TTS  
-- ⚡ Low-latency (<5 sec) performance with GPU acceleration  
-- 🧠 Support for low-resource languages  
-- 💬 WebSocket-based live status updates  
-- 🎛️ Clean, responsive UI with audio waveform visualization  
+- 🗣️ Natural-sounding speech synthesis via gTTS  
+- ⚡ Fast performance with Whisper Tiny model  
+- 🧠 Support for low-resource languages (Hindi, Bengali, etc.)  
+- 🔄 Manual and automatic transcription + translation options  
+- 🎛️ Clean, responsive UI with real-time audio waveform visualization  
+- 💻 Best experienced in Google Chrome (Safari playback may be limited)
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Component        | Technology Used             |
-|------------------|-----------------------------|
-| Frontend         | HTML5, CSS3, Vanilla JS     |
-| Backend          | Node.js (Express), WebSocket |
-| Translation      | MarianMT (via Python script) |
-| Speech-to-Text   | ASR (Whisper or DeepSpeech) |
-| Text-to-Speech   | Tacotron / WaveNet (TTS)    |
-| GPU Support      | NVIDIA RTX 4070             |
+| Component        | Technology Used               |
+|------------------|-------------------------------|
+| Frontend         | HTML5, CSS3, JavaScript       |
+| Backend          | Flask (Python)                |
+| Translation      | MarianMT (transformers)       |
+| Speech-to-Text   | OpenAI Whisper (tiny)         |
+| Text-to-Speech   | gTTS + pydub                  |
+| Audio Encoding   | MediaRecorder API             |
 
 ---
 
 ## 📸 Interface Overview
 
-- 🎙️ Start, Stop, Pause recording buttons  
-- 🎧 Playback and translated audio controls  
-- 🌍 Dropdown to select translation language  
-- 📈 Real-time waveform visualization  
-- ⏳ Spinner showing processing stages via WebSocket  
+- 🎙️ Start, Pause, and Stop recording buttons  
+- 🎧 Playback for both input and translated audio  
+- 🌍 Clickable buttons to select translation language  
+- 📈 Real-time audio waveform visualizer  
+- 🔄 Status updates showing transcription and translation stages
 
 ---
 
 ## 📁 Project Structure
 
+📂 Here's how the core directory looks:
+
 ```
 SpeechSync/
-├── index.html                # Frontend interface
-├── server.js                 # Node.js backend server
-├── process_audio.py          # Python script for ASR + NMT + TTS
-├── package.json              # NPM dependencies
-├── .gitignore                # Git ignore rules
-├── assets/                   # Icons, spinner, audio, etc.
-│   ├── microphone.png
-│   ├── pause.png
-│   ├── play.png
-│   ├── stop.png
-│   ├── spinner.gif
-└── uploads/                  # Runtime audio storage (ignored in Git)
+├── app.py                  # Flask backend server
+├── index.html              # Main frontend UI
+├── process_audio.py        # ASR, NMT, and TTS logic
+├── requirements.txt        # Python dependencies
+├── .gitignore              # Git ignore rules
+├── README.md               # Project documentation
+├── uploads/                # Stores recorded audio files
+├── output/                 # Stores generated audio response
 ```
 
 ---
 
 ## 🧑‍💻 Installation & Setup
 
-### 📦 1. Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/DSinghania13/SpeechSync.git
-cd speechsync
+cd SpeechSync
 ```
 
-### 🧪 2. Install Node Dependencies
+### 2. Create Virtual Environment (Optional but Recommended)
 
 ```bash
-npm install
+python3.12 -m venv .venv
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 ```
 
-### 🧪 3. Install Python Requirements
-
-- Make sure you have Python 3 and pip installed. Then run:
+### 3. Install Python Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-###  Run the App
+---
 
-- Start the backend server:
+## ▶️ Run the Application
 
 ```bash
-node server.js
+python3 app.py
 ```
 
-- Access the frontend:
+- Open your browser (preferably **Google Chrome**) and go to:
 
 ```
-http://localhost:3000
+http://localhost:5050
 ```
 
 ---
 
 ## 🧪 Model Architecture
 
-1.	**ASR** → Transcribes speech into text
+1.	**ASR (Whisper)** → Transcribes speech into text
 2.	**NMT (MarianMT)** → Translates text into target language
-3.	**TTS** → Converts translated text into speech
+3.	**TTS (gTTS)** → Converts translated text into speech
+
+---
+
+## ⚙️ How It Works
+
+1. **Transcribe**: Converts input speech to text using Whisper.
+2. **Translate**: Translates English text to the selected language using MarianMT.
+3. **Synthesize**: Generates translated speech using gTTS and plays it back.
+
+---
+
+## 🌍 Supported Languages
+
+- Hindi (`hi-IN`)
+- Bengali (`bn-IN`)
+- Spanish (`es-SP`)
+- French (`fr-FR`)
+
+> Note: More languages can be added by extending the MarianMT and gTTS logic in `process_audio.py`.
 
 ---
 

@@ -8,3 +8,6 @@ pydub
 requests
 gtts
 openai-whisper
+flask
+flask-cors
+certifi
