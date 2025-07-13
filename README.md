@@ -11,7 +11,7 @@
 
 Below is a preview of the web-based interface designed for seamless interaction. Users can speak live and receive real-time translations in an intuitive, responsive interface.
 
-![image](https://github.com/user-attachments/assets/6fde6ed0-4377-421a-bebc-31d43fb53745)
+![image](https://github.com/user-attachments/assets/d7319c4f-b1c6-47a7-8304-7d980591d1d6)
 
 ---
 
