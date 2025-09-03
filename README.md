@@ -163,4 +163,3 @@ http://localhost:5050
 > _“Speak with ease, translate in a breeze” – because the world should never be lost in translation._
 
 ---
-.
