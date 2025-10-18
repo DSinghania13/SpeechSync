@@ -2,6 +2,9 @@
 
 **SpeechSync** is a real-time multilingual speech-to-speech translation system that bridges communication gaps across languages. Built using a modular pipeline of ASR (Automatic Speech Recognition), NMT (Neural Machine Translation), and TTS (Text-to-Speech), SpeechSync delivers low-latency, high-accuracy translations that are both context-aware and user-friendly.
 
+## 🔗 Live Demo
+
+Access the live project here: [View Deployed App](https://speech-sync.vercel.app)
 
 > ⚠️ **For the best experience, open this app in Google Chrome. Safari may have limited audio playback support.**
 
