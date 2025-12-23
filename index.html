@@ -384,7 +384,7 @@
     // Start recording handler
     recordBtn.addEventListener('click', async () => {
         // Reset UI placeholders
-        transcriptionBox.innerHTML = `<p class="transcription-text">(Transcription will appear after translation)</p>`;
+        transcriptionBox.innerHTML = `<p class="transcription-text">(Transcription will appear after stop recording)</p>`;
         translationBox.innerHTML = `<p class="translation-text">Click 'Translate Now' to begin translation...</p>`;
         document.getElementById('inputPlayer')?.remove();
         document.getElementById('outputPlayer')?.remove();
@@ -580,3 +580,4 @@
 </script>
 </body>
 </html>
+
