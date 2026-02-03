@@ -166,3 +166,10 @@ http://localhost:5050
 > _“Speak with ease, translate in a breeze” – because the world should never be lost in translation._
 
 ---
+
+## 📝 License
+
+This project is licensed under the [MIT License](LICENSE).  
+You are free to use, modify, and distribute this software with proper attribution.
+
+---
